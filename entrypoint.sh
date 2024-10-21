@@ -9,7 +9,7 @@ my_dir=$(pwd)
 status_code="0"
 find_path_clauses=(! -path "${my_dir}/.git/*")
 invalid_files=()
-scan_regex="#!.*[/ ](sh|bash|dash|ksh)$"
+scan_regex="#!.*[/= ](sh|bash|dash|ksh)$"
 
 process_input(){      
     [ -n "$execution_mode" ] && my_dir="./test_data"
@@ -75,7 +75,7 @@ scan_dir(){
     echo "Scanning all the shell scripts at $1 🔎"
     while IFS= read -r script 
     do
-        local first_line=$(head -n 1 "$script")
+        local first_line=$(head -n 2 "$script")
         if [[ "$first_line" =~ $scan_regex ]]; then
             scan_file "$script"
         else
@@ -90,7 +90,7 @@ log_invalid_files(){
     for file in ${invalid_files[@]}; do
         printf "\n\t\e[33m %s \e[0m\n" "$file"
     done
-    printf "\n\e[33m ShellCheck only supports sh/bash/dash/ksh scripts. For supported scripts to be scanned, make sure to add a proper shebang on the first line of the script.\n\n To fix the warning for the unsupported scripts or to ignore specific files, use the 'exclude-paths' input. For more information check:
+    printf "\n\e[33m ShellCheck only supports sh/bash/dash/ksh scripts. Ensure a proper shebang on the first line of the script or add the correct flavor of '# shellcheck shell=sh' directly below the shebang.\n\n To fix the warning for the unsupported scripts or to ignore specific files, use the 'exclude-paths' input. For more information check:
     https://github.com/azohra/shell-linter#input\e[0m\n"
 }
 
